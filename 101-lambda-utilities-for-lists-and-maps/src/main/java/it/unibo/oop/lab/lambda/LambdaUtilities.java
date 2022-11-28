@@ -2,6 +2,7 @@ package it.unibo.oop.lab.lambda;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -61,7 +62,14 @@ public final class LambdaUtilities {
         /*
          * Suggestion: consider Optional.filter
          */
-        return null;
+        final List<Optional<T>> l = new ArrayList<>(list.size() * 2);
+        list.forEach(t ->  l.add(Optional.ofNullable(t).filter(pre)));
+            /*if(pre.test(t) == true) {
+                l.add(Optional.of(t));     // IMPLEMENTAZIONE CHE HO FATTO, MIGLIORATA DA QUELLA SOPRA
+            } else {                       // WRAPPO IL TUTTO COME OPITONAL E GLI FACCIO IL FILTER --> Optional.filter()
+                l.add(Optional.empty());
+            }*/
+        return l;
     }
 
     /**
@@ -80,7 +88,17 @@ public final class LambdaUtilities {
         /*
          * Suggestion: consider Map.merge
          */
-        return null;
+        final Map<R, Set<T>> m = new HashMap<>();
+        list.forEach(t -> {
+            m.merge(op.apply(t), Set.of(t), (old , now) -> {
+                Set<T> s = new HashSet<>();
+                s.addAll(now);
+                s.addAll(old);
+                return s;
+            });
+        });
+
+        return m;
     }
 
     /**
@@ -101,7 +119,11 @@ public final class LambdaUtilities {
          *
          * Keep in mind that a map can be iterated through its forEach method
          */
-        return null;
+        final Map<K, V> m = new HashMap<>();
+        map.entrySet().forEach( i -> {
+            m.put(i.getKey(), i.getValue().orElse(def.get()));
+        });
+        return m;
     }
 
     /**
