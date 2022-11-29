@@ -1,12 +1,14 @@
 package it.unibo.oop.lab.streams;
 
-import java.util.Comparator;
+/*import java.util.Comparator;*/
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Set;
+/*import java.util.Map.Entry;
+import java.util.stream.Collectors;*/
 import java.util.stream.Stream;
 
 /**
@@ -77,6 +79,8 @@ public final class MusicGroupImpl implements MusicGroup {
                     .map((a) -> a.getSongName());
     }
 
+
+    //ERRORE, DOBBIAMO FARLO CON LE STREAM
     private double totalDurationAlbum (final String album) {
         double sum = 0;
         for (Song song : songs) {
@@ -90,8 +94,18 @@ public final class MusicGroupImpl implements MusicGroup {
     @Override
     public Optional<String> longestAlbum() {
         return albums.keySet().stream()
-                    .reduce((a, b) -> totalDurationAlbum(a) >= totalDurationAlbum(b) ? a : b);
-    }
+                       .reduce((a, b) -> totalDurationAlbum(a) >= totalDurationAlbum(b) ? a : b);
+    } 
+
+    /*public Optional<String> longestAlbum() {
+        return songs.stream()
+                    .filter(a -> a.getAlbumName().isPresent())
+                    .collect(Collectors.groupingBy(Song::getAlbumName, Collectors.summingDouble(Song::getDuration)))
+                    .entrySet().stream()
+                    .collect(Collectors.maxBy(Comparator.comparingDouble(Entry::getValue)))
+                    .flatMap(Entry::getKey); //FLATMAP APPIATTISCE LA MAPPA E EVITA DI CREARE UNO STREAM E CI RITORNA
+                                             //UN OPTIONAL<STRING> E NON UNA STRING COME FAREBBE MAP
+    }*/
 
     private static final class Song {
 
